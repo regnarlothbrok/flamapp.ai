@@ -1,0 +1,30 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext.kotlin_version = '1.8.22'  // Ensure this matches everywhere
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    alias(libs.plugins.android.application) apply false
+}
+
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            // Force one consistent version of annotations
+            force "org.jetbrains:annotations:13.0"
+            force "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+            force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22"
+
+            // Exclude conflicting IntelliJ annotations
+            eachDependency { DependencyResolveDetails details ->
+                if (details.requested.group == "com.intellij" && details.requested.name == "annotations") {
+                    details.useTarget "org.jetbrains:annotations:13.0"
+                }
+            }
+        }
+    }
+}
+
